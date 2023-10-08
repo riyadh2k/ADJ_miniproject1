@@ -8,6 +8,8 @@ import enums.State;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 
+import javax.swing.JOptionPane;
+
 public class ClockController {
     private Clock model;
     private ClockView view;
@@ -16,7 +18,6 @@ public class ClockController {
         this.model = model;
         this.view = view;
 
-        // Initialize the view with the current time and date
         this.view.setCurrentTimeDisplay(model.getCurrentTime());
         this.view.setCurrentDateDisplay(model.getCurrentDate());
 
@@ -40,24 +41,42 @@ public class ClockController {
             @Override
             public void actionPerformed(ActionEvent e) {
                 if(model.getCurrentState() == State.SET_TIME) {
-                    // Extract hour, minute, second from the time input
-                    String[] timeParts = view.getTimeInput().split(":");
-                    int hour = Integer.parseInt(timeParts[0]);
-                    int minute = Integer.parseInt(timeParts[1]);
-                    int second = Integer.parseInt(timeParts[2]);
-                    model.setLocalTime(hour, minute, second);
-                    view.setCurrentTimeDisplay(model.getCurrentTime());
+                    if (!view.getTimeInput().matches("^\\d{2}:\\d{2}:\\d{2}$")) {
+                        JOptionPane.showMessageDialog(view.getFrame(), "Time should be in HH:mm:ss format!", "Input Error", JOptionPane.ERROR_MESSAGE);
+                        return;
+                    }
+                    try {
+                        String[] timeParts = view.getTimeInput().split(":");
+                        int hour = Integer.parseInt(timeParts[0]);
+                        int minute = Integer.parseInt(timeParts[1]);
+                        int second = Integer.parseInt(timeParts[2]);
+                        model.setLocalTime(hour, minute, second);
+                        view.setCurrentTimeDisplay(model.getCurrentTime());
+                    } catch(Exception ex) {
+                        JOptionPane.showMessageDialog(view.getFrame(), "Invalid time values. Ensure hour is between 0-23, and minute & second are between 0-59.", "Input Error", JOptionPane.ERROR_MESSAGE);
+                    }
                 } else if(model.getCurrentState() == State.SET_DATE) {
-                    // Extract year, month, day from the date input
-                    String[] dateParts = view.getDateInput().split("-");
-                    int year = Integer.parseInt(dateParts[0]);
-                    int month = Integer.parseInt(dateParts[1]);
-                    int day = Integer.parseInt(dateParts[2]);
-                    model.setLocalDate(year, month, day);
-                    view.setCurrentDateDisplay(model.getCurrentDate());
+                    if (!view.getDateInput().matches("^\\d{4}-\\d{2}-\\d{2}$")) {
+                        JOptionPane.showMessageDialog(view.getFrame(), "Date should be in YYYY-MM-DD format!", "Input Error", JOptionPane.ERROR_MESSAGE);
+                        return;
+                    }
+                    try {
+                        String[] dateParts = view.getDateInput().split("-");
+                        int year = Integer.parseInt(dateParts[0]);
+                        int month = Integer.parseInt(dateParts[1]);
+                        int day = Integer.parseInt(dateParts[2]);
+                        model.setLocalDate(year, month, day);
+                        view.setCurrentDateDisplay(model.getCurrentDate());
+                    } catch(Exception ex) {
+                        JOptionPane.showMessageDialog(view.getFrame(), "Invalid date values.", "Input Error", JOptionPane.ERROR_MESSAGE);
+                    }
                 }
             }
         });
+
+
+        
+        view.display();
     }
 
     private void updateViewBasedOnState(String result) {
@@ -71,16 +90,31 @@ public class ClockController {
                 view.resetHighlights();
                 break;
             case SET_TIME:
-                System.out.println("Highlighting Time"); // Debug print statement
                 view.highlightTime();
                 break;
             case SET_DATE:
-                System.out.println("Highlighting Date"); // Debug print statement
                 view.highlightDate();
                 break;
         }
     }
 
+    private void handleSetEvent() {
+        if (model.getCurrentState() == State.SET_TIME) {
+            String[] timeParts = view.getTimeInput().split(":");
+            int hour = Integer.parseInt(timeParts[0]);
+            int minute = Integer.parseInt(timeParts[1]);
+            int second = Integer.parseInt(timeParts[2]);
+            model.setLocalTime(hour, minute, second);
+            view.setCurrentTimeDisplay(model.getCurrentTime());
+        } else if (model.getCurrentState() == State.SET_DATE) {
+            String[] dateParts = view.getDateInput().split("-");
+            int year = Integer.parseInt(dateParts[0]);
+            int month = Integer.parseInt(dateParts[1]);
+            int day = Integer.parseInt(dateParts[2]);
+            model.setLocalDate(year, month, day);
+            view.setCurrentDateDisplay(model.getCurrentDate());
+        }
+    }
     public void displayView() {
         view.display();
     }

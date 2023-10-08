@@ -86,6 +86,9 @@ public class ClockView {
     public JButton getReadyToSetButton() {
         return readyToSetButton;
     }
+    public JFrame getFrame() {
+        return frame;
+    }
 
     public JButton getSetButton() {
         return setButton;

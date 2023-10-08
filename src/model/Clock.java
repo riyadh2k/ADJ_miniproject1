@@ -3,7 +3,6 @@ package model;
 import java.time.LocalDate;
 import java.time.LocalTime;
 import java.time.format.DateTimeFormatter;
-
 import enums.State;
 import enums.Event;
 
@@ -23,7 +22,6 @@ public class Clock {
         return localTime.format(formatter);
     }
 
-
     public String getCurrentDate() {
         return localDate.toString();
     }
@@ -40,39 +38,34 @@ public class Clock {
         return currentState;
     }
 
-public String handleEvent(Event event) {
-    switch (currentState) {
-        case DISPLAY_TIME:
-            if (event == Event.ChangeMode) {
-                currentState = State.DISPLAY_DATE;
-                return getCurrentDate();
-            } else if (event == Event.ReadyToSet) {
-                currentState = State.SET_TIME;
-                return "Enter new time";
-            }
-            break;
-        case DISPLAY_DATE:
-            if (event == Event.ChangeMode) {
-                currentState = State.DISPLAY_TIME;
-                return getCurrentTime();
-            } else if (event == Event.ReadyToSet) {
-                currentState = State.SET_DATE;
-                return "Enter new date";
-            }
-            break;
-        case SET_TIME:
-            if (event == Event.ReadyToSet) {
-                currentState = State.DISPLAY_TIME;
-                return getCurrentTime();
-            }
-            break;
-        case SET_DATE:
-            if (event == Event.ReadyToSet) {
-                currentState = State.DISPLAY_DATE;
-                return getCurrentDate();
-            }
-            break;
+    public String handleEvent(Event event) {
+        switch (currentState) {
+            case DISPLAY_TIME:
+                if (event == Event.ChangeMode) {
+                    currentState = State.DISPLAY_DATE;
+                    return getCurrentDate();
+                } else if (event == Event.ReadyToSet) {
+                    currentState = State.SET_TIME;
+                    return "Enter new time";
+                }
+                break;
+            case DISPLAY_DATE:
+                if (event == Event.ChangeMode) {
+                    currentState = State.DISPLAY_TIME;
+                    return getCurrentTime();
+                } else if (event == Event.ReadyToSet) {
+                    currentState = State.SET_DATE;
+                    return "Enter new date";
+                }
+                break;
+            case SET_TIME:
+            case SET_DATE:
+                if (event == Event.ReadyToSet) {
+                    currentState = (currentState == State.SET_TIME) ? State.DISPLAY_TIME : State.DISPLAY_DATE;
+                    return (currentState == State.DISPLAY_TIME) ? getCurrentTime() : getCurrentDate();
+                }
+                break;
+        }
+        return "Action not allowed in the current state";
     }
-    return "Action not allowed in the current state";
-}
 }
