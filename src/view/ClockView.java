@@ -7,7 +7,7 @@ import java.awt.*;
 public class ClockView {
     private JFrame frame;
     private JLabel currentTimeLabel, currentDateLabel;
-    private JPanel buttonPanel, timePanel, datePanel;
+    private JPanel buttonPanel;
     private JButton changeModeButton, readyToSetButton, setButton;
     private JTextField timeInput, dateInput;
     private Border defaultBorder = BorderFactory.createEmptyBorder();

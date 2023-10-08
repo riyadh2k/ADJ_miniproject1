@@ -98,23 +98,6 @@ public class ClockController {
         }
     }
 
-    private void handleSetEvent() {
-        if (model.getCurrentState() == State.SET_TIME) {
-            String[] timeParts = view.getTimeInput().split(":");
-            int hour = Integer.parseInt(timeParts[0]);
-            int minute = Integer.parseInt(timeParts[1]);
-            int second = Integer.parseInt(timeParts[2]);
-            model.setLocalTime(hour, minute, second);
-            view.setCurrentTimeDisplay(model.getCurrentTime());
-        } else if (model.getCurrentState() == State.SET_DATE) {
-            String[] dateParts = view.getDateInput().split("-");
-            int year = Integer.parseInt(dateParts[0]);
-            int month = Integer.parseInt(dateParts[1]);
-            int day = Integer.parseInt(dateParts[2]);
-            model.setLocalDate(year, month, day);
-            view.setCurrentDateDisplay(model.getCurrentDate());
-        }
-    }
     public void displayView() {
         view.display();
     }
